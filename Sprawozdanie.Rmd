@@ -1,0 +1,33 @@
+---
+title: "Sprawozdanie"
+author: "Olga Sieradzan, Justyna Sarkowicz, Weronika Duda, Amelia Madej, Aleksandra Węgrzyn"
+date: "2025-01-09"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: 
+      collapsed: true
+      smooth_scroll: true
+    toc_font: "Arial"
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+```{r}
+library(dplyr)
+library(cowplot)
+library(ggplot2)
+library(readr)
+database <- read_csv("GitHub/Earthquake-prediction/dataset/database.csv")
+
+```
+
+
+# Wprowadzenie 
+
+# Opis danych 
