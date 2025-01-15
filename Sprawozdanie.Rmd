@@ -63,7 +63,7 @@ Sprawdzanymi parametrami są;
 
 # Opis danych i metodyki
 
-Do predyckji cen firmy Microsoft wbrano model LSTM (Long Short-Term Memory), ponieważ modele LSTM są wysoce przydatne w modelowaniu danych sekwencyjnych czyli np. szeregów czasowych, którym są odczyty cen zamknięcia z giełdy.
+Do predyckji cen firmy Microsoft wbrano model LSTM (Long Short-Term Memory), ponieważ modele LSTM są wysoce przydatne w modelowaniu danych sekwencyjnych czyli np. szeregów czasowych, którymi są odczyty cen zamknięcia z giełdy.
 
 W celu użycia tego modelu, przeprowadzona została normalizacja danych do zakresu od 0 do 1, za pomocą wzoru 
 $$
@@ -76,7 +76,7 @@ Dodatkowo, dane potrzebowały podziału na sekwencje i odpowiadających im warto
 <div style='text-align: justify'>
 Firma Microsoft została wybrana do badania ze względu na popularność spółki (przynależnośc do wielkiej piątki), i co za tym idzie, dużą ilość publikacji w związku z tą spółką. 
 
-```{r}
+```{r, echo=FALSE}
 split_index <- floor(0.8 * nrow(database))
 split_date <- database$Date[split_index]
 
@@ -96,7 +96,7 @@ Na wykresie można zauważyć dane na których działano w badaniu. Czerwona lin
 # Wyniki
 
 <div style='text-align: justify'>
-Łącznie przeprowadzono 100 prognozowań, 5 razy dla każdego zestawu parametrów. Badano wpływ 5 różnych parametrów. W sprawozdaniu pokazywany będzie zestaw wykresów dla jednen z 5 prób przeprowadzonych dla wszytskich parametrów, w celu zaoszczędzenia miejsca i długości sprawozdania. Dostęp do wykresów dla wszytskich prób przeprowadzonych w ramach badania jest w folderze 'plots', dołączonym do sprawozdania.
+Łącznie przeprowadzono 100 prognozowań, 5 razy dla każdego zestawu parametrów. Badano wpływ 5 różnych parametrów. W sprawozdaniu pokazywany będzie zestaw wykresów dla jednej z 5 prób przeprowadzonych dla wszystkich parametrów, w celu zaoszczędzenia miejsca i długości sprawozdania. Dostęp do wykresów dla wszytskich prób przeprowadzonych w ramach badania jest w folderze 'plots', dołączonym do sprawozdania.
 
 ## Funkcja aktywacyjna 
 
@@ -115,12 +115,24 @@ Pozostałe parametry pozostają stałe:
 
 **Funkcja liniowa**
 
+$h(x) = x $
+
 ```{r}
 knitr::include_graphics("activation_linear_rep_3.png")
 ```
 
 
 **Funkcja relu**
+
+
+$$
+h(x) = 
+\begin{cases} 
+x, & x \geq 0 \\ 
+0, & x \leq 0 
+\end{cases}
+$$
+
 
 ```{r}
 knitr::include_graphics("activation_relu_rep_2.png")
@@ -129,11 +141,19 @@ knitr::include_graphics("activation_relu_rep_2.png")
 
 **Funkcja sigmoindalna**
 
+$$
+h(x) = \frac{1}{(1+e^{-x})}-1
+$$
+
 ```{r}
 knitr::include_graphics("activation_sigmoid_rep_4.png")
 ```
 
 **Funkcja tangenshiperboliczny**
+
+$$
+h(x) = \frac{2}{(1+e^{-2x})}-1
+$$
 
 ```{r}
 knitr::include_graphics("activation_tanh_rep_4.png")
@@ -144,7 +164,7 @@ knitr::include_graphics("activation_tanh_rep_4.png")
 Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej oraz funkcji relu (~ 0.002), chociaż warto wspomnieć że w przypadku dwóch prób, które mozna znaleśc w folderze plots, funckja relu zaprognozowała same zera. 
 
 <div style='text-align: justify'>
-Słabym dopasowaniem cechuje się funkcja sigmoindalna, gdzie błąd walidacji sięgnał 0.03. W wynikach dla tej funkcji można zauważyć zdecydowne niedoszacowanie w momencie w którym spółka microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh. 
+Słabym dopasowaniem cechuje się funkcja sigmoindalna, gdzie błąd walidacji sięgnął 0.03. W wynikach dla tej funkcji można zauważyć zdecydowne niedoszacowanie w momencie w którym spółka microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh. 
 
 ## Rozmiar partii
 
@@ -236,11 +256,112 @@ knitr::include_graphics("layers_5_rep_4.png")
 Na wykresach można zauważyć zależność , że im wiecej wartstw tym predykcja minimalnie gorsza. Badacze nie spodziewali sie takiej zależności.  
 
 
+## Liczba neuronów
 
+<div style='text-align: justify'>
+Na poniższych wykresach zaprzentowano wykresy dla zwiekszającej się liczby neuronów w warstwach w zbudowanym modelu. 
 
+Pozostałe parametry pozostają stałe:
 
+* liczba warstw = 3
 
+* optymalizator = Adam
 
+* funkcja aktywacji = f.liniowa
+
+* rozmiar partii = 16
+
+**50 neuronów**
+
+```{r}
+knitr::include_graphics("neurons_50_rep_0.png")
+```
+
+**100 neuronów**
+
+```{r}
+knitr::include_graphics("neurons_100_rep_1.png")
+```
+
+**150 neuronów**
+
+```{r}
+knitr::include_graphics("neurons_150_rep_4.png")
+```
+
+**200 neuronów**
+
+```{r}
+knitr::include_graphics("neurons_200_rep_3.png")
+```
+
+Ogólnie rzecz biorąc  bład walidacyjny waha się wokół 0.001 w większości przypadków. Dla liczby neuronów = 200, jest on jednak niższy. Jednak we wszystkich sytuacjach występują duże wahania błędu.
+
+## Optymalizator
+
+<div style='text-align: justify'>
+Na poniższych wykresach zaprzentowano wykresy dla różnych optymalizatorów w zbudowanym modelu. 
+
+Pozostałe parametry pozostają stałe:
+
+* liczba warstw = 3
+
+* liczba neuronów = 20
+
+* funkcja aktywacji = f.liniowa
+
+* rozmiar partii = 16
+
+**Adagrad**
+
+Adagrad automatycznie dostosowuje krok optymalizacji dla każdego parametru w oparciu o historię gradientów. Wagi, które często mają duże gradienty, otrzymują mniejsze kroki optymalizacji. Parametry rzadko aktualizowane mają większe kroki optymalizacji.
+
+```{r}
+knitr::include_graphics("optimizer_Adagrad_rep_0.png")
+```
+
+Dla optymalizatora Adagrad widzimy, że błąd walidacyjny zmierza do błędu trenowania. Wykres błędu różni się zdecydowanie od  wykresów w innych przypadkach. Nie mamy tutaj takich wahań, ale dla początkowych epok wartości błędu są dość wysokie. Prognoza dość mocno się różni od rzeczywistych wartości.
+
+**Adam**
+
+Adam utrzymuje zbiór wykładniczo malejących średnich poprzednich gradientów i kwadratowych gradientów. Oblicza pierwszy i drugi moment gradientów, które są odpowiednio oszacowaniami średniej i niecentrowanej wariancji gradientów. Te momenty są następnie wykorzystywane do aktualizacji parametrów modelu.
+
+```{r}
+knitr::include_graphics("optimizer_Adam_rep_4.png")
+```
+
+Dla optymalizatora Adam błąd już zaczyna się wahać. Jednka na przestrzeni wszystkich epok błąd jest bardzo niski. Powyżej 20 epok jest on niższy niższy niż 0.001. Tutaj prognoza jest praktycznie identyczna jak rzeczywiste wartośći. Stąd też takie niskie wartości błędu.
+
+**RMSprop**
+
+RMSprop to ulepszenie SGD, które dynamicznie dostosowuje krok optymalizacji w zależności od gradientów. Skaluje krok optymalizacji w zależności od wielkości gradientu – mniejsze kroki dla dużych gradientów i większe dla małych gradientów.
+
+```{r}
+knitr::include_graphics("optimizer_RMSprop_rep_2.png")
+```
+
+Dla optyamlizatora RMSprop również mamy duże wahania błędu. Jednak wartości są bardzo niskie, zwłaszcza w porównaniu do optymalizatora Adagrad. Natomiast błąd nie schodzi tutaj tak nisko jak w przypadku opt. Adam. Tutaj dopasowanie prognozy też jest bardzo dobre.
+
+**SGD**
+
+SGD aktualizuje parametry w małych partiach danych treningowych, dzięki czemu jest wydajny obliczeniowo. Dostosowuje parametry w kierunku najbardziej stromego spadku funkcji straty, stopniowo zbiegając się w kierunku minimum.
+
+```{r}
+knitr::include_graphics("optimizer_SGD_rep_1.png")
+```
+
+Dla optymalizatora SGD ponownie jest sytuacja taka jak dla opt. Adagrad. Wartości błędu na przestrzeni epok jest bardzo wysoki. Maleje zdecydowanie wolniej niż w innych przypadkach. Wypada on tutaj najgorzej. Możemy to też zobaczyć po prognozie cen, że uzyskane wyniki znacząco się różnią od rzeczywistych.
+
+Najlepiej zdecydowanie wypada optymalizator Adam. Daje on najniższe wartości błędu i prognoza jest najlepiej dopasowana do rzeczywistych wartości. Najgorzej natomiast wypada optymalizator SGD. W odróżnieniu od pozostałych nie wykorzystuje on adaptacyjnego tempa uczenia.
+
+## Podsumowanie
+
+# Porównanie wyników
+
+Co trzeba zrobić jeszcze:
+- przegląd literatury (to co na teams)
+- podsumowanie końcowe
+- porównać wyniki z literaturą
 
 
 
