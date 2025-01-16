@@ -65,6 +65,22 @@ Sprawdzanymi parametrami są;
 
 ***
 
+## Dotychczasowe badania nad wykorzystaniem LSTM
+
+***
+
+<div style='text-align: justify'>
+W ostatnich latach znaczną popularność zyskały zaawansowane metody sztucznej inteligencji, w tym sieci neuronowe typu Long Short-Term Memory (LSTM). Technologie te znajdują zastosowanie w prognozowaniu przyszłych cen akcji, które są uzależnione od licznych czynników zewnętrznych. W literaturze przedmiotu dostępnych jest wiele badań dotyczących wykorzystania sieci LSTM do predykcji cen akcji, ze szczególnym uwzględnieniem spółki Microsoft.
+
+W artykule zatytułowanym *„Analysis and Forecast of Stock Price Based on LSTM Algorithm”* omówiono wykorzystanie modelu predykcyjnyjnego LSTM do prognozowania cen zamknięcia akcji firmy Microsoft. Wyniki analizy wskazują, iż model LSTM wykazuje wysoka skuteczność prognozowania, uzyskując wartość błędu RMSE o 24,43% niższą w porównaniu do regresji grzbietowej oraz 16,69% niższą w stosunku do klasycznej sieci neuronowej (Liu, 2021).
+
+Podobnie, w publikacji *"Research on Microsoft Stock Price Prediction Based on Various Models"* skupiono się na analizie zastosowania różnych modeli predykcyjnych: regresji liniowej, ARIMA oraz LSTM w prognozowaniu cen akcji firmy Microsoft. Badanie obejmowało dane z okresu od kwietnia 2015 roku do kwietnia 2021 roku. Najlepsze rezultaty uzyskano w przypadku modelu LSTM, który osiągnął znacznie niższą wartość błędu RMSE w porównaniu do regresji liniowej oraz ARIMA. Podkreślono, że zdolność modelu LSTM do uchwycenia skomplikowanych, nieliniowych wzorców w danych czyni go wyjątkowo skutecznym narzędziem w analizie szeregów czasowych (Fu, 2024).
+
+Z kolei w pracy *"Apple, Microsoft, and Amazon stock price prediction based on ARIMA and LSTM"* przeprowadzono analizę porównawczą modeli ARIMA oraz LSTM w kontekście prognozowania cen akcji trzech wiodących spółek technologicznych: Apple, Microsoft oraz Amazon. Wyniki badania wskazują, iż model ARIMA osiąga wyższą dokładność prognoz w porównaniu do modelu LSTM, co zostało ocenione za pomocą wskaźników RMSE oraz $\small R^2$. Zauważono jednak, że ograniczenia badania obejmowały pominięcie zewnętrznych czynników wpływających na ceny akcji oraz uproszczone podejście do optymalizacji modelu LSTM (Xia, 2024).
+</div>
+
+***
+
 # Opis danych i metodyki
 
 ***
@@ -103,7 +119,7 @@ Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona li
 
 ***
 
-# Wyniki
+# Analiza wpływu różnych parametrów
 
 ***
 
@@ -118,13 +134,11 @@ Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona li
 ***
 
 <div style='text-align: justify'>
-Na poniższych wykresach zaprezentowano wyniki dla 4 badanych funkcji aktywacji, zwizualizowanych na poniższym wykresie.
+Na poniższych wykresach zaprezentowano wyniki dla 4 badanych funkcji aktywacji.
+</div>
 
-```{r}
-
-library(ggplot2)
-
-# Generowanie danych
+<br>
+```{r fig.align="center"}
 x <- seq(-10, 10, length.out = 500)
 data <- data.frame(
   x = rep(x, 4),
@@ -136,8 +150,8 @@ data <- data.frame(
   ),
   function_name = factor(rep(
     c("f. liniowa", 
-      "f. ReLu", 
-      "f. sigmoindalna", 
+      "f. ReLU", 
+      "f. sigmoidalna", 
       "f. tanh"), 
     each = length(x)
   ))
@@ -152,13 +166,8 @@ ggplot(data, aes(x = x, y = y, color = function_name)) +
     y = "h(x)",
     color = "Funkcje"
   ) +
-  theme_minimal(base_size = 14) +
+  theme_light(base_size = 14) +
   ylim(-1.5, 1.5)
- 
-
-
-
-
 ```
 
 
@@ -539,19 +548,6 @@ Przeprowadzona analiza umożliwiła zbadanie wpływu kluczowych parametrów mode
 
 ***
 
-## Przegląd literatury
-
-***
-
-<div style='text-align: justify'>
-W ostatnich latach znaczną popularność zyskały zaawansowane metody sztucznej inteligencji, w tym sieci neuronowe typu Long Short-Term Memory (LSTM). Technologie te znajdują zastosowanie w prognozowaniu przyszłych cen akcji, które są uzależnione od licznych czynników zewnętrznych. W literaturze przedmiotu dostępnych jest wiele badań dotyczących wykorzystania sieci LSTM do predykcji cen akcji, ze szczególnym uwzględnieniem spółki Microsoft.
-
-W artykule Liu zatytułowanym *„Analysis and Forecast of Stock Price Based on LSTM Algorithm”* przedstawiono model predykcyjny LSTM zastosowany do prognozowania cen zamknięcia akcji firmy Microsoft. Wyniki analizy wskazują, iż model LSTM wykazuje wysoka wydajność prognozowania, osiągając wartość RMSE o 24,43% niższą w porównaniu z regresją grzbietową oraz o 16,69% niższą 
-w odniesieniu do klasycznej sieci neuronowej. Publikacja *"Research on Microsoft Stock Price Prediction Based on Various Models"* dotyczy zastosowania różnych modeli predykcyjnych: regresji, ARIMA oraz LSTM w prognozowaniu cen akcji firmy Microsoft. W badaniu wykorzystano dane z okresu od kwietnia 2015 roku do kwietnia 2021 roku. najlepsze rezultaty uzyskano w przypadku modelu LSTM, który osiągnął znacznie niższą wartość błędu RMSE w porównaniu do regresji liniowej oraz ARIMA. Oznacza to, że LSTM, ze względu na zdolność uchwycenia złożonych, nieliniowych wzorców w danych szeregów czasowych, jest skutecznym narzędziem do prognozowania. Z kolei w pracy Xia *„Apple, Microsoft, and Amazon Stock Price Prediction Based on ARIMA and LSTM”* przeprowadzono analizę porównawczą modeli ARIMA oraz LSTM w kontekście prognozowania cen akcji trzech wiodących spółek technologicznych: Apple, Microsoft oraz Amazon. Wyniki przeprowadzonego badania wskazują, iż model ARIMA osiąga wyższą dokładność prognoz w porównaniu do modelu LSTM, co zostało ocenione za pomocą wskaźników RMSE oraz $\small R^2$. Zauważono jednak, że ograniczenia badania obejmowały pominięcie zewnętrznych czynników wpływających na ceny akcji oraz uproszczone podejście do optymalizacji modelu LSTM.
-</div>
-
-***
-
 ## Porównanie wyników
 
 ***
@@ -559,6 +555,19 @@ w odniesieniu do klasycznej sieci neuronowej. Publikacja *"Research on Microsoft
 <div style='text-align: justify'>
 W artykule *„Comparative Analysis of ARIMA and LSTM for Predicting Fluctuating Time Series Data”* dokonano porównania modeli **ARIMA** oraz **LSTM** w kontekście prognozowania danych szeregów czasowych. Wyniki analizy wskazują, że model LSTM wykazuje wyższą efektywność w przypadku mniejszych zbiorów danych, uzyskując niższą wartość RMSE w porównaniu do modelu ARIMA. Z kolei w przypadku większego zbioru danych zauwazyć można odwrotną zależność. W kontekście braków danych, model LSTM lepiej sprawdził się w prognozowaniu, chociaż dokładność obu modeli ulegała obniżeniu wraz z wzrostem liczby brakujących obserwacji.
 </div>
+
+*** 
+
+# Bibliografia 
+
+***
+
+1. Fu, Y. (2024). *Research on Microsoft Stock Price Prediction Based on Various Models*. Proceedings of the 1st International Conference on Data Science and Engineering, 11–16
+
+2. Liu, Y. (2021). *Analysis and forecast of stock price based on LSTM algorithm*. 2021 IEEE International Conference on Computer Science, Electronic Information Engineering and Intelligent Control Technology (CEI), Fuzhou, China, 76-79
+
+3. Xia, X. (2024). *Apple, Microsoft, and Amazon stock price prediction based on ARIMA and LSTM*. Applied and Computational Engineering, 53(1), 181–189
+
 
 
 
