@@ -118,7 +118,49 @@ Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona li
 ***
 
 <div style='text-align: justify'>
-Na poniższych wykresach zaprezentowano wyniki dla 4 badanych funkcji aktywacji. 
+Na poniższych wykresach zaprezentowano wyniki dla 4 badanych funkcji aktywacji, zwizualizowanych na poniższym wykresie.
+
+```{r}
+
+library(ggplot2)
+
+# Generowanie danych
+x <- seq(-10, 10, length.out = 500)
+data <- data.frame(
+  x = rep(x, 4),
+  y = c(
+    x,                                        # h(x) = x
+    ifelse(x >= 0, x, 0),                    # h(x) = {x, x >= 0; 0, x < 0}
+    1 / (1 + exp(-x)),                   # h(x) = 1 / (1 + e^(-x)) 
+    2 / (1 + exp(-2 * x)) - 1                # h(x) = 2 / (1 + e^(-2x)) - 1
+  ),
+  function_name = factor(rep(
+    c("f. liniowa", 
+      "f. ReLu", 
+      "f. sigmoindalna", 
+      "f. tanh"), 
+    each = length(x)
+  ))
+)
+
+# Tworzenie wykresu
+ggplot(data, aes(x = x, y = y, color = function_name)) +
+  geom_line(size = 1.2) +
+  labs(
+    title = "Wykres funkcji aktywacyjnych h(x)",
+    x = "x",
+    y = "h(x)",
+    color = "Funkcje"
+  ) +
+  theme_minimal(base_size = 14) +
+  ylim(-1.5, 1.5)
+ 
+
+
+
+
+```
+
 
 Pozostałe parametry pozostają stałe:
 
@@ -138,6 +180,9 @@ Pozostałe parametry pozostają stałe:
 **Funkcja liniowa**
 
 $$h(x) = x$$
+
+
+
 
 ```{r}
 knitr::include_graphics("activation_linear_rep_3.png")
