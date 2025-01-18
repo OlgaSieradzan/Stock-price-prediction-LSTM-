@@ -133,11 +133,11 @@ $$
 R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
 $$
 
-Im wartość $RMSE$ jest bliższa 0, tym lepsza i dokładniejsza jest prognoza modelu.
+Im wartość $\small RMSE$ jest bliższa 0, tym lepsza i dokładniejsza jest prognoza modelu.
 
-Natomiast $R^2$ oznacza jaki procent $y$ został wyjaśnionych przez model. Im wartośc bliższa 1 (100%), tym lepszy model, ponieważ wyjaśnia większy procent danych. 
+Natomiast $\small R^2$ oznacza jaki procent $\small y$ został wyjaśnionych przez model. Im wartośc bliższa 1 (100%), tym lepszy model, ponieważ wyjaśnia większy procent danych. 
 
-W tabelkach podano średnie $RMSE$ i $R^2$ ze wszystkich prób dla danych parametrów.
+W tabelkach podano średnie $\small RMSE$ i $\small R^2$ ze wszystkich prób dla danych parametrów.
 
 </div>
 
@@ -293,9 +293,9 @@ act
 
 
 <div style='text-align: justify'>
-Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej (~ 0.0015) oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. Natomiast jej wartość $R^2$ i RMSE wskazują na całkowite niedopasowanie modelu. Wysokie wartości RMSE i ujemne $R^2$ mogą wskazywać na możliwe przeszacowanie modelu lub niedoszacowanie. Natomiast zdecydowanie lepiej wypada funkcja liniowa, która ma najniższy błąd walidacyjny i RMSE w porównaniu do reszty. $R^2$ ~0.9 wskazuje na dobre wyjaśnienie danych za pomocą modelu. Jednak błąd pomimo tego, że jest naniższy w porównaniu do pozostałych to nadal jest dość wysoki.
+Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej (~ 0.0015) oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. Natomiast jej wartość $\small R^2$ i RMSE wskazują na całkowite niedopasowanie modelu. Wysokie wartości RMSE i ujemne $\small R^2$ mogą wskazywać na możliwe przeszacowanie modelu lub niedoszacowanie. Natomiast zdecydowanie lepiej wypada funkcja liniowa, która ma najniższy błąd walidacyjny i RMSE w porównaniu do reszty. $\small R^2$ ~0.9 wskazuje na dobre wyjaśnienie danych za pomocą modelu. Jednak błąd pomimo tego, że jest naniższy w porównaniu do pozostałych to nadal jest dość wysoki.
 
-Słabym dopasowaniem cechuje się funkcja sigmoidalna, gdzie błąd walidacji sięgnął 0.03, a $R^2$ wynosi zalediwe ~0.0.4. W wynikach dla tej funkcji można zauważyć zdecydowane niedoszacowanie w momencie, w którym spółka Microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh.  
+Słabym dopasowaniem cechuje się funkcja sigmoidalna, gdzie błąd walidacji sięgnął 0.03, a $\small R^2$ wynosi zalediwe ~0.0.4. W wynikach dla tej funkcji można zauważyć zdecydowane niedoszacowanie w momencie, w którym spółka Microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh.  
 </div>
 
 ***
@@ -369,7 +369,7 @@ ba
 ```
 
 <div style='text-align: justify'>
-Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. Możemy to również zauważyć, po wartościach RMSE i $R^2$. W przypadku $R^2$ widać nieznaczący spadek wraz ze wzrostem rozmiaru partii, natomiast dla RMSE zaobserwowano lekki wzrost wartości wraz ze wzrostem rozmiaru partii.  Nie są to co prawda duże różnice, ale są zauważalne. Dopasowanie modeli nie jest najgorsze, $R^2$ ~ 0.8 pokazuje, że duża część danych została wyjaśniona przez model.
+Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. Możemy to również zauważyć, po wartościach RMSE i $\small R^2$. W przypadku $\small R^2$ widać nieznaczący spadek wraz ze wzrostem rozmiaru partii, natomiast dla RMSE zaobserwowano lekki wzrost wartości wraz ze wzrostem rozmiaru partii.  Nie są to co prawda duże różnice, ale są zauważalne. Dopasowanie modeli nie jest najgorsze, $\small R^2$ ~ 0.8 pokazuje, że duża część danych została wyjaśniona przez model.
 </div>
 
 ***
@@ -444,7 +444,7 @@ lay
 ```
 
 <div style='text-align: justify'>
-Na wykresach można zauważyć zależność, że im więcej warstw, tym predykcja minimalnie gorsza. Widać to również po $R^2$ i RMSE. Wraz ze wzrostem liczby warstw maleje $R^2$ i rośnie RMSE w znaczącym stopniu. Już dla 5 warstw wyjaśniane jest tylko 44% danych przez model, a RMSE wynosi 28.885. Natomiast dla 2 warstw wyjaśniane jest aż 95% danych i RMSE to tylko 8.42.
+Na wykresach można zauważyć zależność, że im więcej warstw, tym predykcja minimalnie gorsza. Widać to również po $\small R^2$ i RMSE. Wraz ze wzrostem liczby warstw maleje $R^2$ i rośnie RMSE w znaczącym stopniu. Już dla 5 warstw wyjaśniane jest tylko 44% danych przez model, a RMSE wynosi 28.885. Natomiast dla 2 warstw wyjaśniane jest aż 95% danych i RMSE to tylko 8.42.
 
 </div>
 
@@ -522,7 +522,7 @@ ne
 <div style='text-align: justify'>
 Błąd walidacyjny w większości przypadków waha się wokół 0.001. Dla liczby neuronów = 200, jest on jednak niższy. We wszystkich sytuacjach występują duże wahania błędu walidacyjnego. 
 
-Wraz ze wzrostem liczby neuronów w modelu rośnie stopień dopasowania modelu do danych, co znajduje odzwierciedlenie w wysokim $R^2$, wyjaśniającym ponad 90% zmienności danych.
+Wraz ze wzrostem liczby neuronów w modelu rośnie stopień dopasowania modelu do danych, co znajduje odzwierciedlenie w wysokim $\small R^2$, wyjaśniającym ponad 90% zmienności danych.
 
 RMSE zmniejsza się wraz ze wzrostem liczby neuronów, co oznacza lepsze dopasowanie modelu. Na początku spadek RMSE jest dość znaczący, jednak przy większej liczbie neuronów różnice stają się mniej zauważalne. Mimo to, wartość RMSE pozostaje dość wysoka, wynosząc blisko 10 dla wszystkich analizowanych parametrów.
 </div>
@@ -630,7 +630,7 @@ op
 
 <div style='text-align: justify'>
 
-Adam wykazuje najlepsze wyniki pod względem RMSE i $R^2$. Niskie RMSE wskazuje na dobre dopasowanie modelu do danych, a wysokie $R^2$ sugeruje, że model wyjaśnia prawie całą zmienność danych. Dla RMSprop wartości RMSE są wyższe niż w przypadku Adama, $R^2$ jest nadal wysokie, co oznacza, że model jest dość dobrze dopasowany do danych. W przypadku Adagrad zarówno RMSE i $R^2$ zdecydowanie gorzej wypadają w porównaniu do 2 poprzednich optymalizatorów. Natomiast najgorzej wypada SGD. RMSE jest bardzo wysokie, a $R^2$ ujemne, co oznacza, że model jest całkowicie niedopasowany do danych. Potwierdzają to również prognozy, które są dalekie od rzeczywistych.
+Adam wykazuje najlepsze wyniki pod względem RMSE i $\small R^2$. Niskie RMSE wskazuje na dobre dopasowanie modelu do danych, a wysokie $\small R^2$ sugeruje, że model wyjaśnia prawie całą zmienność danych. Dla RMSprop wartości RMSE są wyższe niż w przypadku Adama, $\small R^2$ jest nadal wysokie, co oznacza, że model jest dość dobrze dopasowany do danych. W przypadku Adagrad zarówno RMSE i $\small R^2$ zdecydowanie gorzej wypadają w porównaniu do 2 poprzednich optymalizatorów. Natomiast najgorzej wypada SGD. RMSE jest bardzo wysokie, a $\small R^2$ ujemne, co oznacza, że model jest całkowicie niedopasowany do danych. Potwierdzają to również prognozy, które są dalekie od rzeczywistych.
 
 Najlepiej zdecydowanie wypada optymalizator Adam. Daje on najniższe wartości błędu i prognoza jest najlepiej dopasowana do rzeczywistych wartości. Najgorzej natomiast wypada optymalizator SGD. W odróżnieniu od pozostałych nie wykorzystuje on adaptacyjnego tempa uczenia.
 </div>
@@ -688,8 +688,7 @@ results <- data.frame(
 results
 ```
 
-W tabelce zestawiono RMSE i $R^2$ uzyskane w artykule (skrót art.) oraz nasz najlepszy wynik, który 
-następujących wartości parametrów: 
+W tabelce zestawiono RMSE i $\small R^2$ uzyskane w artykule (skrót art.) oraz nasz najlepszy wynik dla następujących wartości parametrów: 
 
 * liczba warstw = 3
 
@@ -701,10 +700,40 @@ następujących wartości parametrów:
 
 * optymalizator = Adam
 
-$R^2$ wypada bardzo podobnie dla nasze LSTM i ARIMY. Natomiast ARIMA osiągnęła znacznie niższy błąd (1.8729) w porównaniu do naszego LSTM (6.5589), co wskazuje, że ARIMA lepiej przewidziała dane w przypadku tych danych. Wyniki LSTM z artykułu mają nieco niższy błąd RMSE, ale zdecydowanie niższy $R^2$. Parametry przyjęte w artykule dla LSTM różniły sie znacząco stąd też mogły wyjść rozbieżne wyniki.
+$\small R^2$ wypada bardzo podobnie dla naszego LSTM i ARIMY. Natomiast ARIMA osiągnęła znacznie niższy błąd (1.8729) w porównaniu do naszego LSTM (6.5589), co wskazuje, że ARIMA lepiej przewidziała dane w przypadku tych danych. Wyniki LSTM z artykułu mają nieco niższy błąd RMSE, ale zdecydowanie niższy $\small R^2$. Parametry przyjęte w artykule dla LSTM różniły sie znacząco stąd też mogły wyjść rozbieżne wyniki.
 
-Arima wykazuje lepszą dokładnością w prognozowaniu cen akcji ze względu na wskaźniki RMSE i $R^2$. LSTM jest bardziej wymagające pod kątem dobrania odpowiednich parametrów i ich wartości. 
+Arima wykazuje lepszą dokładnością w prognozowaniu cen akcji ze względu na wskaźniki RMSE i $\small R^2$. LSTM jest bardziej wymagające pod kątem dobrania odpowiednich parametrów i ich wartości. 
 
+</div>
+
+<br>
+<div style='text-align: justify'>
+W publikacji *"Ensemble Stock Market Prediction using SVM, LSTM, and Linear Regression"* porównano efektywność prognozowania trzech modeli: **SVM**, **LSTM** oraz **regresji liniowej**. 
+
+Regresja liniowa stanowi jedną z najczęściej stosowanych metod analizy predykcyjnej. Metoda ta opiera się na relacjach liniowych pomiędzy zmienną zależną (wyjaśnianą) a jedną lub większą liczbą zmiennych niezależnych (predyktorów), w celu prognozowania wartości przyszłych zmiennej przewidywanej.
+
+Zastosowano również model regresji wektora nośnego (SVR), który stanowi adaptację SVM do problemów regresji, co czyni go bardziej odpowiednim do przewidywania wartości ciągłych, takich jak ceny akcji, w przeciwieństwie do pierwotnej funkcji SVM.
+
+Przedmiotem badania były dane dwudziestu najbardziej aktywnych spółek z indeksu NASDAQ z zakresu od 21 września 2009 do 21 września 2019. Warto wspomnieć, iż w przypadku zastosowanego przez nas modelu LSTM zakres danych jest większy, gdyż sięga 2024 roku. 
+
+W tabeli zamieszczonej poniżej dokonano zestawienia błędów $\small R^2$ oraz RMSE dla predykcji rozważanych modeli. Ze względu na analizowanie przez nas jedynie spółki Microsoft przy porównywaniu wyników uwzględniona zostanie tylko ta spółka.
+
+```{r, echo=FALSE}
+methods <- c("LSTM", "LR", "SVR", "LSTM")
+source <- c("Artykuł", "Artykuł", "Artykuł", "Nasz wynik")
+RMSE <- c(1.57, 1.39, 7.25, 6.56)
+R2 <- c(0.96, 1.00, 0.03, 0.97)
+	
+results <- data.frame(
+  Metoda = methods,
+  Źródło = source,
+  RMSE = RMSE,
+  R2 = R2
+)
+results
+```
+
+Mimo różnicy w liczbie rozważanych danych czasowych wartość $\small R^2$ dla LSTM w naszym badaniu oraz w przytoczonej pubikacji jest bardzo zbliżona. Widoczna jest tu znaczna różnica pomiędzy wartością dla SVR a pozostałymi modelami. Jeśli chodzi o wartości RMSE są one najbardziej podobne dla LSTM oraz regresji liniowej.  
 </div>
 
 *** 
@@ -721,7 +750,7 @@ Arima wykazuje lepszą dokładnością w prognozowaniu cen akcji ze względu na 
 
 4. Wall, K. (2022). *Negative R2: Where did you go wrong*. Towards Data Science, https://towardsdatascience.com/negative-r2-where-did-you-go-wrong-9d4f2aa84cfb
 
-
+5. Indika, A., Warusamana, N., Welikala, E., & Deegalla, S. (2021). *Ensemble Stock Market Prediction using SVM,LSTM, and Linear Regression*, https://doi.org/10.36227/techrxiv.16626019.v1
 
 
 
