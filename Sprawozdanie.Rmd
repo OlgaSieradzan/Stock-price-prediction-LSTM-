@@ -22,6 +22,7 @@ library(dplyr)
 library(cowplot)
 library(ggplot2)
 library(readr)
+library(readxl)
 database <- read_csv("msft_us_historical_data.csv")
 ```
 
@@ -114,7 +115,30 @@ database %>%
 ```
 
 <div style='text-align: justify'>
-Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona linia zaznacza 80% danych, czyli po lewej stronie linii jest zbiór treningowy, natomiast po prawej stronie linii znajduje się zbiór testowy.
+Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona linia zaznacza 80% danych, czyli po lewej stronie linii jest zbiór treningowy, natomiast po prawej stronie linii znajduje się zbiór testowy. 
+
+W celu oceny dokładności prognozy i porównania wpływu zmiany parametrów obliczono:
+
+- błąd walidacyjny
+
+- średni błąd kwadratowy (RMSE)
+
+$$
+RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+$$
+
+Im wartość RMSE jest bliższa 0, tym lepsza i dokładniejsza jest prognoza modelu.
+
+- R-kwadrat 
+
+$$
+R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
+$$
+
+Natomiast $R^2$ oznacza ile danych zostało wyjaśnionych przez model. Im wartośc bliższa 1, tym lepszy model. 
+
+W tabelkach podano średnie RMSE i $R^2$ ze wszystkich prób dla danych parametrów.
+
 </div>
 
 ***
@@ -128,6 +152,15 @@ Na wykresie można zauważyć dane, na których działano w badaniu. Czerwona li
 </div>
 
 ***
+
+```{r, echo=FALSE, include=FALSE}
+neurons <- read_excel("results.xlsx", sheet = "neurons")
+optimizer <- read_excel("results.xlsx", sheet = "optimizer")
+activation <- read_excel("results.xlsx", sheet = "activation")
+batch_size <- read_excel("results.xlsx", sheet = "batch_size")
+layers <- read_excel("results.xlsx", sheet = "layers")
+```
+
 
 ## Funkcja aktywacji
 
@@ -240,10 +273,21 @@ $$
 knitr::include_graphics("activation_tanh_rep_4.png")
 ```
 
-<div style='text-align: justify'>
-Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. 
+```{r, echo=FALSE}
+activation %>%
+  group_by(Value) %>%
+  summarise(
+    RMSE = mean(RMSE),
+    R2 = mean(R2)
+  ) %>%
+  as.data.frame() 
+```
 
-Słabym dopasowaniem cechuje się funkcja sigmoidalna, gdzie błąd walidacji sięgnął 0.03. W wynikach dla tej funkcji można zauważyć zdecydowane niedoszacowanie w momencie, w którym spółka Microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh. 
+
+<div style='text-align: justify'>
+Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej (~ 0.0015) oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. Natomiast jej wartość $R^2$ i RMSE wskazują na całkowite niedopasowanie modelu. Wysokie wartości RMSE i ujemne $R^2$ mogą wskazywać na możliwe przeszacowanie modelu lub niedoszacowanie. Natomiast zdecydowanie lepiej wypada funkcja liniowa, która ma najniższy błąd walidacyjny i RMSE w porównaniu do reszty. $R^2$ ~0.9 wskazuje na dobre wyjaśnienie danych za pomocą modelu. Jednka błąd pomimo tego, że jest naniższy w porównaniu do pozostałych to nadal jest dość wysoki.
+
+Słabym dopasowaniem cechuje się funkcja sigmoidalna, gdzie błąd walidacji sięgnął 0.03, a $R^2$ wynosi zalediwe ~0.0.4. W wynikach dla tej funkcji można zauważyć zdecydowane niedoszacowanie w momencie, w którym spółka Microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh.  
 </div>
 
 ***
@@ -304,10 +348,18 @@ knitr::include_graphics("batch_size_64_rep_1.png")
 knitr::include_graphics("batch_size_128_rep_1.png")
 ```
 
-<div style='text-align: justify'>
-Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. 
+```{r, echo=FALSE}
+batch_size %>%
+  group_by(Value) %>%
+  summarise(
+    RMSE = mean(RMSE),
+    R2 = mean(R2)
+  ) %>%
+  as.data.frame() 
+```
 
-Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. 
+<div style='text-align: justify'>
+Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. Możemy to również zauważyć, po wartościach RMSE i $R^2$. Widać również pewną zależność, że wraz ze wzrostem rozmiaru partii, nieznacznie maleje $R^2$, a RMSE rośnie. Nie są to co prawda duże różnice, ale są zauważalne. Dopasowanie modeli nie jest najgorsze, $R^2$ ~ 0.8 pokazuje, że duża część danych została wyjaśniona przez model. Natomiast błędy mogłyby być niższe.
 </div>
 
 ***
@@ -338,7 +390,7 @@ Pozostałe parametry pozostają stałe:
 **2 warstwy**
 
 ```{r}
-knitr::include_graphics("layers_2_rep_4.png")
+knitr::include_graphics("layers_2_rep_1.png")
 ```
 
 ***
@@ -365,11 +417,22 @@ knitr::include_graphics("layers_4_rep_2.png")
 **5 warstw**
 
 ```{r}
-knitr::include_graphics("layers_5_rep_4.png")
+knitr::include_graphics("layers_5_rep_1.png")
+```
+
+```{r, echo=FALSE}
+layers %>%
+  group_by(value) %>%
+  summarise(
+    RMSE = mean(rmse),
+    R2 = mean(R2)
+  ) %>%
+  as.data.frame() 
 ```
 
 <div style='text-align: justify'>
-Na wykresach można zauważyć zależność, że im więcej warstw, tym predykcja minimalnie gorsza. Badacze nie spodziewali się takiej zależności.  
+Na wykresach można zauważyć zależność, że im więcej warstw, tym predykcja minimalnie gorsza. Widać to również po $R^2$ i RMSE. Wraz ze wzrostem liczby warstw maleje $R^2$ i rośnie RMSE w znaczącym stopniu. Już dla 5 warstw wyjaśniane jest tylko 44% danych przez model, a RMSE wynosi 28.885. Natomiast dla 2 warstw wyjaśniane jest aż 95% danych i RMSE to tylko 8.42.
+
 </div>
 
 ***
@@ -430,8 +493,22 @@ knitr::include_graphics("neurons_150_rep_4.png")
 knitr::include_graphics("neurons_200_rep_3.png")
 ```
 
+```{r, echo=FALSE}
+neurons %>%
+  group_by(Value) %>%
+  summarise(
+    RMSE = mean(RMSE),
+    R2 = mean(R2)
+  ) %>%
+  as.data.frame() 
+```
+
 <div style='text-align: justify'>
-Ogólnie rzecz biorąc, bład walidacyjny w większości przypadków waha się wokół 0.001. Dla liczby neuronów = 200, jest on jednak niższy. We wszystkich sytuacjach występują duże wahania błędu.
+Ogólnie rzecz biorąc, bład walidacyjny w większości przypadków waha się wokół 0.001. Dla liczby neuronów = 200, jest on jednak niższy. We wszystkich sytuacjach występują duże wahania błędu walidacyjnego. 
+
+Wraz ze wzrostem liczby neuronów w modelu rośnie stopień dopasowania modelu do danych, co znajduje odzwierciedlenie w wysokim $R^2$, wyjaśniającym ponad 90% zmienności danych.
+
+RMSE zmniejsza się wraz ze wzrostem liczby neuronów, co oznacza lepsze dopasowanie modelu. Na początku spadek RMSE jest dość znaczący, jednak przy większej liczbie neuronów różnice stają się mniej zauważalne. Mimo to, wartość RMSE pozostaje dość wysoka, wynosząc blisko 10 dla wszystkich analizowanych parametrów.
 </div>
 
 ***
@@ -520,8 +597,21 @@ SGD aktualizuje parametry w małych partiach danych treningowych, dzięki czemu 
 knitr::include_graphics("optimizer_SGD_rep_1.png")
 ```
 
+Dla optymalizatora SGD ponownie jest sytuacja taka, jak dla opt. Adagrad. Wartości błędu na przestrzeni epok są bardzo wysokie. Maleje zdecydowanie wolniej niż w innych przypadkach. Wypada on tutaj najgorzej. Możemy to też zobaczyć po prognozie cen, że uzyskane wyniki znacząco się różnią od rzeczywistych. 
+
+```{r, echo=FALSE}
+optimizer %>%
+  group_by(Value) %>%
+  summarise(
+    RMSE = mean(RMSE),
+    R2 = mean(R2)
+  ) %>%
+  as.data.frame() 
+```
+
 <div style='text-align: justify'>
-Dla optymalizatora SGD ponownie jest sytuacja taka, jak dla opt. Adagrad. Wartości błędu na przestrzeni epok są bardzo wysokie. Maleje zdecydowanie wolniej niż w innych przypadkach. Wypada on tutaj najgorzej. Możemy to też zobaczyć po prognozie cen, że uzyskane wyniki znacząco się różnią od rzeczywistych.
+
+Adam wykazuje najlepsze wyniki pod względem RMSE i $R^2$. Niskie RMSE wskazuje na dobre dopasowanie modelu do danych, a wysokie $R^2$ sugeruje, że model wyjaśnia prawie całą zmienność danych. Dla RMSprop wartości RMSE są wyższe niż w przypadku Adama, $R^2$ jest nadal wysokie, co oznacza, że model jest dość dobrze dopasowany do danych. W przypadku Adagrad zarówno RMSE i $R^2$ zdecydowanie gorzej wypadają w porównaniu do 2 poprzednich optymalizatorów. Natomiast najgorzej wypada SGD. RMSE jest bardzo wysokie, a $R^2$ ujemne, co oznacza, że model jest całkowicie niedopasowany do danych. Potwierdzają to również prognozy, które są dalekie od rzeczywistych.
 
 Najlepiej zdecydowanie wypada optymalizator Adam. Daje on najniższe wartości błędu i prognoza jest najlepiej dopasowana do rzeczywistych wartości. Najgorzej natomiast wypada optymalizator SGD. W odróżnieniu od pozostałych nie wykorzystuje on adaptacyjnego tempa uczenia.
 </div>
@@ -553,7 +643,49 @@ Przeprowadzona analiza umożliwiła zbadanie wpływu kluczowych parametrów mode
 ***
 
 <div style='text-align: justify'>
-W artykule *„Comparative Analysis of ARIMA and LSTM for Predicting Fluctuating Time Series Data”* dokonano porównania modeli **ARIMA** oraz **LSTM** w kontekście prognozowania danych szeregów czasowych. Wyniki analizy wskazują, że model LSTM wykazuje wyższą efektywność w przypadku mniejszych zbiorów danych, uzyskując niższą wartość RMSE w porównaniu do modelu ARIMA. Z kolei w przypadku większego zbioru danych zauwazyć można odwrotną zależność. W kontekście braków danych, model LSTM lepiej sprawdził się w prognozowaniu, chociaż dokładność obu modeli ulegała obniżeniu wraz z wzrostem liczby brakujących obserwacji.
+W artykule *„Apple, Microsoft, and Amazon stock price prediction based on ARIMA and LSTM”* dokonano porównania modeli **ARIMA** oraz **LSTM** w kontekście prognozowania. 
+ARIMA to jedna z najpopularniejszych metod modelowania szeregów czasowych. Skrót ARIMA opisuje jej trzy kluczowe komponenty:
+
+- AR (Autoregressive): Model autoregresyjny opisuje zależność wartości szeregu czasowego od jego wcześniejszych wartości. Parametr p określa liczbę opóźnionych wartości branych pod uwagę.
+
+- I (Integrated): Część "zintegrowana" oznacza różnicowanie szeregu czasowego w celu usunięcia trendu lub uzyskania stacjonarności. Parametr d określa liczbę takich różnicowań.
+
+- MA (Moving Average): Model średniej ruchomej opisuje zależność wartości szeregu od błędów z poprzednich kroków. Parametr  q określa liczbę takich błędów branych pod uwagę.
+
+Dla spółki Microsoft wykorzystano dane z 1 września 2021 do 29 września 2023. Zatem ilość danych była zdecydowanie mniejsza niż w naszym badaniu. Zasotowano również inny podział danych: 60% to zbiór treningowy, 20% zbiór walidaycjny i ostatnie 20% to zbiór testowy.
+
+```{r, echo=FALSE}
+methods <- c("LSTM", "ARIMA", "LSTM")
+source <- c("Artykuł", "Artykuł", "Nasz wynik")
+RMSE <- c(5.0984, 1.8729, 6.558908)
+R2 <- c(0.7806, 0.9715, 0.9712344)
+	
+results <- data.frame(
+  Metoda = methods,
+  Źródło = source,
+  RMSE = RMSE,
+  R2 = R2
+)
+results
+```
+
+W tabelce zestawiono RMSE i $R^2$ uzyskane w artykule (skrót art.) oraz nasz najlepszy wynik, który 
+następujących wartości parametrów: 
+
+* liczba warstw = 3
+
+* liczba neuronów = 20
+
+* funkcja aktywacji = f.liniowa
+
+* rozmiar partii = 16
+
+* optymalizator = Adam
+
+$R^2$ wypada bardzo podobnie dla nasze LSTM i ARIMY. Natomiast ARIMA osiągnęła znacznie niższy błąd (1.8729) w porównaniu do naszego LSTM (6.5589), co wskazuje, że ARIMA lepiej przewidziała dane w przypadku tych danych. Wyniki LSTM z artykułu mają nieco niższy błąd RMSE, ale zdecydowanie niższy $R^2$. Parametry przyjęte w artykule dla LSTM różniły sie znacząco stąd też mogły wyjść rozbieżne wyniki.
+
+Arima wykazuje lepszą dokładnością w prognozowaniu cen akcji ze względu na wskaźniki RMSE i $R^2$. LSTM jest bardziej wymagające pod kątem dobrania odpowiednich parametrów i ich wartości. 
+
 </div>
 
 *** 
@@ -567,6 +699,8 @@ W artykule *„Comparative Analysis of ARIMA and LSTM for Predicting Fluctuating
 2. Liu, Y. (2021). *Analysis and forecast of stock price based on LSTM algorithm*. 2021 IEEE International Conference on Computer Science, Electronic Information Engineering and Intelligent Control Technology (CEI), Fuzhou, China, 76-79
 
 3. Xia, X. (2024). *Apple, Microsoft, and Amazon stock price prediction based on ARIMA and LSTM*. Applied and Computational Engineering, 53(1), 181–189
+
+4. Wall, K. (2022). *Negative R2: Where did you go wrong*. Towards Data Science, https://towardsdatascience.com/negative-r2-where-did-you-go-wrong-9d4f2aa84cfb
 
 
 
