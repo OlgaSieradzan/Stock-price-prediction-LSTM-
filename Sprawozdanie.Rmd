@@ -43,23 +43,23 @@ Modele LSTM charakteryzują się dużą liczbą parametrów, a ich dobór ma ist
 
 Sprawdzanymi parametrami są; 
 
-* **Funkcja aktywacji** - mechanizm, który decyduje o tym, jakie informacje mają zostać podane dalej w sieci, a które mają być zapomniane. 
+* **`Funkcja aktywacji`** - mechanizm, który decyduje o tym, jakie informacje mają zostać podane dalej w sieci, a które mają być zapomniane. 
 
   *Badane wartości: f.liniowa, f.sigmoidalna, f.ReLU, f.tangensa hiberbolicznego (tanh)*
 
-* **Rozmiar partii** - liczba próbek, które są przetwarzane przez model w jednym przebiegu podczas uczenia. Wielkość partii znacząco wpływa na aktualizacje wag w trakcie treningu.
+* **`Rozmiar partii`** - liczba próbek, które są przetwarzane przez model w jednym przebiegu podczas uczenia. Wielkość partii znacząco wpływa na aktualizacje wag w trakcie treningu.
 
   *Badane wartości: 16, 32, 64, 128*
 
-* **Liczba wartstw** - liczba poziomów, przez które przechodzą dane w trakcie prztwarzania. Im więcej takich warstw, tym głębsze są sieci. 
+* **`Liczba wartstw`** - liczba poziomów, przez które przechodzą dane w trakcie prztwarzania. Im więcej takich warstw, tym głębsze są sieci. 
 
   *Badane wartości: 2, 3, 4, 5*
 
-* **Liczba neuronów** - ilość neuronów w pojedynczej warstwie. W neuronie przetwarzane są informacje sieci za pomocą wybranych funkcji aktywacyjnych i przekazywane dalej.
+* **`Liczba neuronów`** - ilość neuronów w pojedynczej warstwie. W neuronie przetwarzane są informacje sieci za pomocą wybranych funkcji aktywacyjnych i przekazywane dalej.
 
   *Badane wartości: 50, 100, 150, 200*
 
-* **Optymalizator** - algorytm działający w celu optymalizacji wag sieci, aby minimalizować błąd predykcji. 
+* **`Optymalizator`** - algorytm działający w celu optymalizacji wag sieci, aby minimalizować błąd predykcji. 
 
   *Badane wartości: Adam, RMSprop, SGD, Adagrad*
 </div>
@@ -127,17 +127,17 @@ $$
 RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
 $$
 
-Im wartość RMSE jest bliższa 0, tym lepsza i dokładniejsza jest prognoza modelu.
-
 - R-kwadrat 
 
 $$
 R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
 $$
 
-Natomiast $R^2$ oznacza ile danych zostało wyjaśnionych przez model. Im wartośc bliższa 1, tym lepszy model. 
+Im wartość $RMSE$ jest bliższa 0, tym lepsza i dokładniejsza jest prognoza modelu.
 
-W tabelkach podano średnie RMSE i $R^2$ ze wszystkich prób dla danych parametrów.
+Natomiast $R^2$ oznacza jaki procent $y$ został wyjaśnionych przez model. Im wartośc bliższa 1 (100%), tym lepszy model, ponieważ wyjaśnia większy procent danych. 
+
+W tabelkach podano średnie $RMSE$ i $R^2$ ze wszystkich prób dla danych parametrów.
 
 </div>
 
@@ -273,19 +273,27 @@ $$
 knitr::include_graphics("activation_tanh_rep_4.png")
 ```
 
+**Przeciętny błąd prognozy**
+<div style='text-align: justify'>
+Blędy zostały policzone jako średnia dla wszytskich 5 prób
+</div>
 ```{r, echo=FALSE}
-activation %>%
+act <- activation %>%
   group_by(Value) %>%
   summarise(
     RMSE = mean(RMSE),
     R2 = mean(R2)
   ) %>%
   as.data.frame() 
+
+colnames(act) <- c("f.aktywacyjna", "RMSE", "R2")
+
+act
 ```
 
 
 <div style='text-align: justify'>
-Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej (~ 0.0015) oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. Natomiast jej wartość $R^2$ i RMSE wskazują na całkowite niedopasowanie modelu. Wysokie wartości RMSE i ujemne $R^2$ mogą wskazywać na możliwe przeszacowanie modelu lub niedoszacowanie. Natomiast zdecydowanie lepiej wypada funkcja liniowa, która ma najniższy błąd walidacyjny i RMSE w porównaniu do reszty. $R^2$ ~0.9 wskazuje na dobre wyjaśnienie danych za pomocą modelu. Jednka błąd pomimo tego, że jest naniższy w porównaniu do pozostałych to nadal jest dość wysoki.
+Najniższy błąd walidacji wyszedł w przypadku funkcji liniowej (~ 0.0015) oraz funkcji ReLU (~ 0.002), chociaż warto wspomnieć, że w przypadku dwóch prób, które można znaleźć w folderze plots, funkcja ReLU zaprognozowała same zera. Natomiast jej wartość $R^2$ i RMSE wskazują na całkowite niedopasowanie modelu. Wysokie wartości RMSE i ujemne $R^2$ mogą wskazywać na możliwe przeszacowanie modelu lub niedoszacowanie. Natomiast zdecydowanie lepiej wypada funkcja liniowa, która ma najniższy błąd walidacyjny i RMSE w porównaniu do reszty. $R^2$ ~0.9 wskazuje na dobre wyjaśnienie danych za pomocą modelu. Jednak błąd pomimo tego, że jest naniższy w porównaniu do pozostałych to nadal jest dość wysoki.
 
 Słabym dopasowaniem cechuje się funkcja sigmoidalna, gdzie błąd walidacji sięgnął 0.03, a $R^2$ wynosi zalediwe ~0.0.4. W wynikach dla tej funkcji można zauważyć zdecydowane niedoszacowanie w momencie, w którym spółka Microsoft osiągała wyższe ceny na giełdzie. Podobnie jest w przypadku użycia funkcji tanh.  
 </div>
@@ -349,17 +357,19 @@ knitr::include_graphics("batch_size_128_rep_1.png")
 ```
 
 ```{r, echo=FALSE}
-batch_size %>%
+ba <- batch_size %>%
   group_by(Value) %>%
   summarise(
     RMSE = mean(RMSE),
     R2 = mean(R2)
   ) %>%
   as.data.frame() 
+colnames(ba) <- c("Rozmiar partii", "RMSE", "R2")
+ba
 ```
 
 <div style='text-align: justify'>
-Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. Możemy to również zauważyć, po wartościach RMSE i $R^2$. Widać również pewną zależność, że wraz ze wzrostem rozmiaru partii, nieznacznie maleje $R^2$, a RMSE rośnie. Nie są to co prawda duże różnice, ale są zauważalne. Dopasowanie modeli nie jest najgorsze, $R^2$ ~ 0.8 pokazuje, że duża część danych została wyjaśniona przez model. Natomiast błędy mogłyby być niższe.
+Dla pierwszych trzech badanych rozmiarów partii różnica nie wydaje się znacząca. Błędy walidacji są bardzo podobne i oscylują wokół 0.003. Natomiast zwiększenie rozmiaru partii do 128 próbek, wprowadza pogorszenie się wyników i zwiekszenie błędu walidacji. Możemy to również zauważyć, po wartościach RMSE i $R^2$. W przypadku $R^2$ widać nieznaczący spadek wraz ze wzrostem rozmiaru partii, natomiast dla RMSE zaobserwowano lekki wzrost wartości wraz ze wzrostem rozmiaru partii.  Nie są to co prawda duże różnice, ale są zauważalne. Dopasowanie modeli nie jest najgorsze, $R^2$ ~ 0.8 pokazuje, że duża część danych została wyjaśniona przez model.
 </div>
 
 ***
@@ -421,13 +431,16 @@ knitr::include_graphics("layers_5_rep_1.png")
 ```
 
 ```{r, echo=FALSE}
-layers %>%
+lay <- layers %>%
   group_by(value) %>%
   summarise(
     RMSE = mean(rmse),
     R2 = mean(R2)
   ) %>%
   as.data.frame() 
+
+colnames(lay) <- c("Liczba warstw", "RMSE", "R2")
+lay
 ```
 
 <div style='text-align: justify'>
@@ -494,17 +507,20 @@ knitr::include_graphics("neurons_200_rep_3.png")
 ```
 
 ```{r, echo=FALSE}
-neurons %>%
+ne <- neurons %>%
   group_by(Value) %>%
   summarise(
     RMSE = mean(RMSE),
     R2 = mean(R2)
   ) %>%
   as.data.frame() 
+
+colnames(ne) <- c("Liczba neuronów", "RMSE", "R2")
+ne
 ```
 
 <div style='text-align: justify'>
-Ogólnie rzecz biorąc, bład walidacyjny w większości przypadków waha się wokół 0.001. Dla liczby neuronów = 200, jest on jednak niższy. We wszystkich sytuacjach występują duże wahania błędu walidacyjnego. 
+Błąd walidacyjny w większości przypadków waha się wokół 0.001. Dla liczby neuronów = 200, jest on jednak niższy. We wszystkich sytuacjach występują duże wahania błędu walidacyjnego. 
 
 Wraz ze wzrostem liczby neuronów w modelu rośnie stopień dopasowania modelu do danych, co znajduje odzwierciedlenie w wysokim $R^2$, wyjaśniającym ponad 90% zmienności danych.
 
@@ -600,13 +616,16 @@ knitr::include_graphics("optimizer_SGD_rep_1.png")
 Dla optymalizatora SGD ponownie jest sytuacja taka, jak dla opt. Adagrad. Wartości błędu na przestrzeni epok są bardzo wysokie. Maleje zdecydowanie wolniej niż w innych przypadkach. Wypada on tutaj najgorzej. Możemy to też zobaczyć po prognozie cen, że uzyskane wyniki znacząco się różnią od rzeczywistych. 
 
 ```{r, echo=FALSE}
-optimizer %>%
+op <- optimizer %>%
   group_by(Value) %>%
   summarise(
     RMSE = mean(RMSE),
     R2 = mean(R2)
   ) %>%
-  as.data.frame() 
+  as.data.frame()
+colnames(op) <- c("Optymalizator", "RMSE", "R2")
+
+op
 ```
 
 <div style='text-align: justify'>
