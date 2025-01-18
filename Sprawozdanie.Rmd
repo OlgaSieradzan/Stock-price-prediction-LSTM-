@@ -657,7 +657,40 @@ Przeprowadzona analiza umożliwiła zbadanie wpływu kluczowych parametrów mode
 
 ***
 
-## Porównanie wyników
+# Porównanie wyników
+
+***
+
+Ponad samą prognozę oraz wyznaczenie błędów predykcji, postanowiono porównać wyniki dopasowania naszego modelu z innymi rozwiązaniami wykorzystywanymi na świecie. 
+
+Nasze wyniki zostały posrównane do 4 innych rozwiązań pod względem wysokości błędu $RMSE$ oraz wskaźnika $R^2$.
+
+Wybrane metody do porówania:
+
+* **`Model ARIMA`**
+
+* **`Model GRU`**
+
+* **`Model regresji liniowej`**
+
+* **`Model regresji wektora nośnego (SVR)`**
+
+
+W porówaniu zestawiono RMSE i $\small R^2$  dla naszego najlepszego modelu. Najlepszy wynik został osiągnięty dla następujących wartości parametrów: 
+
+* liczba warstw = 3
+
+* liczba neuronów = 20
+
+* funkcja aktywacji = f.liniowa
+
+* rozmiar partii = 16
+
+* optymalizator = Adam
+
+***
+
+## LSTM vs ARIMA
 
 ***
 
@@ -676,8 +709,8 @@ Dla spółki Microsoft wykorzystano dane z 1 września 2021 do 29 września 2023
 ```{r, echo=FALSE}
 methods <- c("LSTM", "ARIMA", "LSTM")
 source <- c("Artykuł", "Artykuł", "Nasz wynik")
-RMSE <- c(5.0984, 1.8729, 6.558908)
-R2 <- c(0.7806, 0.9715, 0.9712344)
+RMSE <- c(5.09, 1.87, 6.56)
+R2 <- c(0.78, 0.97, 0.97)
 	
 results <- data.frame(
   Metoda = methods,
@@ -687,18 +720,6 @@ results <- data.frame(
 )
 results
 ```
-
-W tabelce zestawiono RMSE i $\small R^2$ uzyskane w artykule (skrót art.) oraz nasz najlepszy wynik dla następujących wartości parametrów: 
-
-* liczba warstw = 3
-
-* liczba neuronów = 20
-
-* funkcja aktywacji = f.liniowa
-
-* rozmiar partii = 16
-
-* optymalizator = Adam
 
 $\small R^2$ wypada bardzo podobnie dla naszego LSTM i ARIMY. Natomiast ARIMA osiągnęła znacznie niższy błąd (1.8729) w porównaniu do naszego LSTM (6.5589), co wskazuje, że ARIMA lepiej przewidziała dane w przypadku tych danych. Wyniki LSTM z artykułu mają nieco niższy błąd RMSE, ale zdecydowanie niższy $\small R^2$. Parametry przyjęte w artykule dla LSTM różniły sie znacząco stąd też mogły wyjść rozbieżne wyniki.
 
@@ -706,23 +727,31 @@ Arima wykazuje lepszą dokładnością w prognozowaniu cen akcji ze względu na 
 
 </div>
 
-<br>
+***
+
+## LSTM vs GRU
+
+***
+
 <div style='text-align: justify'>
-W publikacji *"Ensemble Stock Market Prediction using SVM, LSTM, and Linear Regression"* porównano efektywność prognozowania trzech modeli: **SVM**, **LSTM** oraz **regresji liniowej**. 
+W artykule *Predicting Economic Trends and Stock Market Prices with Deep Learning and Advanced Machine Learning Techniques* autorzy porównywali wyniki predykcji i ich jakośc dla dwóch modeli : LSTM oreaz GRU. Badanie przeprowadzono na danych od 2013 do 2022. 
 
-Regresja liniowa stanowi jedną z najczęściej stosowanych metod analizy predykcyjnej. Metoda ta opiera się na relacjach liniowych pomiędzy zmienną zależną (wyjaśnianą) a jedną lub większą liczbą zmiennych niezależnych (predyktorów), w celu prognozowania wartości przyszłych zmiennej przewidywanej.
+GRU (Gated Recurrent Unit) to rodzaj sieci rekurencyjnej (RNN) opracowany w 2014 roku w celu rozwiązania problemu zanikającego gradientu w tradycyjnych RNN. Jego główne zalety to mniejsza liczba parametrów, szybsze uczenie i mniejsze wymagania dotyczące danych potrzebnych do generalizacji.
 
-Zastosowano również model regresji wektora nośnego (SVR), który stanowi adaptację SVM do problemów regresji, co czyni go bardziej odpowiednim do przewidywania wartości ciągłych, takich jak ceny akcji, w przeciwieństwie do pierwotnej funkcji SVM.
+GRU posiada dwa główne mechanizmy:
 
-Przedmiotem badania były dane dwudziestu najbardziej aktywnych spółek z indeksu NASDAQ z zakresu od 21 września 2009 do 21 września 2019. Warto wspomnieć, iż w przypadku zastosowanego przez nas modelu LSTM zakres danych jest większy, gdyż sięga 2024 roku. 
+* Zbiór bramek:
+  Brama resetująca decyduje, ile informacji z przeszłości zostaje "zapomniane".
+  Brama aktualizująca kontroluje, ile nowych informacji jest dodawane do stanu ukrytego.
+* Stan ukryty: Jest bezpośrednio aktualizowany na podstawie tych bramek, co upraszcza strukturę i obliczenia w porównaniu do      LSTM (które posiadają dodatkowy stan pamięci).
 
-W tabeli zamieszczonej poniżej dokonano zestawienia błędów $\small R^2$ oraz RMSE dla predykcji rozważanych modeli. Ze względu na analizowanie przez nas jedynie spółki Microsoft przy porównywaniu wyników uwzględniona zostanie tylko ta spółka.
+Dzięki temu GRU jest bardziej efektywne w przetwarzaniu sekwencji niż standardowe RNN i LSTM, szczególnie przy ograniczonych zasobach obliczeniowych.
 
-```{r, echo=FALSE}
-methods <- c("LSTM", "LR", "SVR", "LSTM")
-source <- c("Artykuł", "Artykuł", "Artykuł", "Nasz wynik")
-RMSE <- c(1.57, 1.39, 7.25, 6.56)
-R2 <- c(0.96, 1.00, 0.03, 0.97)
+```{r}
+methods <- c("LSTM", "GRU", "LSTM")
+source <- c("Artykuł", "Artykuł", "Nasz wynik")
+RMSE <- c(32.37, 8.08, 6.56)
+R2 <- c(0.70, 0.83, 0.97)
 	
 results <- data.frame(
   Metoda = methods,
@@ -733,10 +762,167 @@ results <- data.frame(
 results
 ```
 
-Mimo różnicy w liczbie rozważanych danych czasowych wartość $\small R^2$ dla LSTM w naszym badaniu oraz w przytoczonej pubikacji jest bardzo zbliżona. Widoczna jest tu znaczna różnica pomiędzy wartością dla SVR a pozostałymi modelami. Jeśli chodzi o wartości RMSE są one najbardziej podobne dla LSTM oraz regresji liniowej.  
+Wyniki dla modelu GRU i LSTM z artykułu są słabe w porówaniu z naszymi  wynikami. $RMSE$ wyszedł naprawde wysoki, do tego $R^2$ nie jest nawet powyżej 90%, co jak widać po wynikach dla innych metod, jest osiągalne.
+
+Pomimo wielu zalet modelu GRU w porówaniu do LSTM, to niestety ciężko stwierdzić że jest on warty zastosowania w praktyce. 
+
 </div>
 
+***
+
+## LSTM vs Regresja liniowa 
+
+***
+
+<div style='text-align: justify'>
+W publikacji *"Ensemble Stock Market Prediction using SVM, LSTM, and Linear Regression"* porównano efektywność prognozowania trzech modeli: **SVM**, **LSTM** oraz **regresji liniowej**. 
+
+Regresja liniowa stanowi jedną z najczęściej stosowanych metod analizy predykcyjnej. Metoda ta opiera się na relacjach liniowych pomiędzy zmienną zależną (wyjaśnianą) a jedną lub większą liczbą zmiennych niezależnych (predyktorów), w celu prognozowania wartości przyszłych zmiennej przewidywanej.
+
+Przedmiotem badania były dane dwudziestu najbardziej aktywnych spółek z indeksu NASDAQ z zakresu od 21 września 2009 do 21 września 2019. Warto wspomnieć, iż w przypadku zastosowanego przez nas modelu LSTM zakres danych jest większy, gdyż sięga 2024 roku. 
+
+W tabeli zamieszczonej poniżej dokonano zestawienia błędów $\small R^2$ oraz RMSE dla predykcji rozważanych modeli. Ze względu na analizowanie przez nas jedynie spółki Microsoft przy porównywaniu wyników uwzględniona zostanie tylko ta spółka.
+
+```{r, echo=FALSE}
+methods <- c("LSTM", "LR", "LSTM")
+source <- c("Artykuł", "Artykuł", "Nasz wynik")
+RMSE <- c(1.57, 1.39, 6.56)
+R2 <- c(0.96, 1.00, 0.97)
+	
+results <- data.frame(
+  Metoda = methods,
+  Źródło = source,
+  RMSE = RMSE,
+  R2 = R2
+)
+results
+```
+
+Mimo różnicy w liczbie rozważanych danych czasowych wartość $\small R^2$ dla LSTM w naszym badaniu oraz w przytoczonej pubikacji jest bardzo zbliżona. Jeśli chodzi o wartości RMSE są one najbardziej podobne dla LSTM oraz regresji liniowej jeżeli chodzi o wyniki z artykułu, nasz LSTM wypada na ich tle słabiej. Zadziwiające są wyniki $\small R^2$ dla regresji liniowej, ponieważ wskazują one na 100% wytłumaczenie zmienności danych, co jest najwyższym wynikiem z wszytskich omawianych w naszej pracy.
+</div>
+
+
 *** 
+
+## LSTM vs SVR
+
+W wyżej opisanym artykule zastosowano również model regresji wektora nośnego (SVR), który stanowi adaptację SVM do problemów regresji, co czyni go bardziej odpowiednim do przewidywania wartości ciągłych, takich jak ceny akcji, w przeciwieństwie do pierwotnej funkcji SVM.
+
+
+```{r, echo=FALSE}
+methods <- c("LSTM", "SVR", "LSTM")
+source <- c("Artykuł", "Artykuł", "Nasz wynik")
+RMSE <- c(1.57, 7.25, 6.56)
+R2 <- c(0.96, 0.03, 0.97)
+	
+results <- data.frame(
+  Metoda = methods,
+  Źródło = source,
+  RMSE = RMSE,
+  R2 = R2
+)
+results
+```
+
+Widoczna jest tu znaczna różnica pomiędzy wartością dla SVR a pozostałymi modelami. $R^2$ wskazuje na to że model w ogóle nie tłumaczy zmienności y. Dodatkowo $RMSE$, wyszło najwyższe z porównywanych w tym podrozdziale metod. Takie wyniki wskazują na kompetną bezużyteczność modelu SVR w predykcji cen firmy Microsoft na giełdzie.
+
+***
+
+## Podsumowanie 
+
+***
+
+Na poniższych wykresach, zwizualizowano wyniki $RSME$ oraz $R^2$ odpowiednio dla wszytskuch omawianych modeli LSTM oraz wszytskich opisanych wyżej metod. 
+
+***
+
+```{r}
+library(ggplot2)
+wykres_RMSE <- data.frame(
+  Model = c("LSTM1", "LSTM2", "LSTM3", "Nasz LSTM"),
+  RMSE = c(5.0984, 32.37, 1.57, 6.56), 
+  R2 = c(0.7806,0.70,0.96,0.97)
+)
+
+# Wykres słupkowy
+ggplot(wykres_RMSE, aes(x = Model, y = RMSE, fill = Model)) +
+  geom_bar(stat = "identity", width = 0.6, show.legend = FALSE) +
+  scale_fill_manual(values = c("LSTM1" = "#1f77b4", "LSTM2" = "orange", "LSTM3" = "#458B00", "Nasz LSTM" = "#CD1076")) +
+  labs(title = "Porównanie RMSE dla różnych modeli LSTM",
+       x = "Model",
+       y = "RMSE") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
+```
+
+
+```{r}
+ggplot(wykres_RMSE, aes(x = Model, y = R2, fill = Model)) +
+  geom_bar(stat = "identity", width = 0.6, show.legend = FALSE) +
+  scale_fill_manual(values = c("LSTM1" = "#1f77b4", "LSTM2" = "orange", "LSTM3" = "#458B00", "Nasz LSTM" = "#CD1076")) +
+  labs(title = "Porównanie R2 dla różnych modeli LSTM",
+       x = "Model",
+       y = "R2") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
+```
+
+Z omawianych modeli LSTM, tworzonych w ramach różnych badań, najgorzej wypadł model LSTM2. Ten model pochodzi z badania *Predicting Economic Trends and Stock Market Prices with Deep Learning and Advanced Machine Learning Techniques.* i cechuje go najwyższe $RMSE$ i najniższy $R^2$. Zbudowany przez nas model LSTM wypadł w miarę dobrze, na tle innych modeli LSTM. Wykazał się najwyższym tłumaczeniem zmienności y, z wszytskich omawianych modeli. Problem powoduje wysoki błąd $RMSE$, który jak widać, może wyjśc owiele niższy. 
+
+***
+
+```{r}
+library(ggplot2)
+wykres_RMSE <- data.frame(
+  Model = c("ARIMA", "GRU", "LR","SVR", "Nasz LSTM"),
+  RMSE = c(1.87, 8.08, 1.39,  7.25,6.56), 
+  R2 = c(0.97,0.83,1, 0.03,0.97)
+)
+
+# Wykres słupkowy
+ggplot(wykres_RMSE, aes(x = Model, y = RMSE, fill = Model)) +
+  geom_bar(stat = "identity", width = 0.6, show.legend = FALSE) +
+  scale_fill_manual(values = c("ARIMA" = "#1f77b4", "GRU" = "orange", "LR" = "#458B00","SVR" = "#8B3E3F", "Nasz LSTM" = "#CD1076")) +
+  labs(title = "Porównanie RMSE dla różnych modeli predykcyjnych",
+       x = "Model",
+       y = "RMSE") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
+```
+
+```{r}
+ggplot(wykres_RMSE, aes(x = Model, y = R2, fill = Model)) +
+  geom_bar(stat = "identity", width = 0.6, show.legend = FALSE) +
+  scale_fill_manual(values = c("ARIMA" = "#1f77b4", "GRU" = "orange", "LR" = "#458B00","SVR" = "#8B3E3F", "Nasz LSTM" = "#CD1076")) +
+  labs(title = "Porównanie R2 dla różnych modeli predykcyjnych",
+       x = "Model",
+       y = "R2") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
+```
+
+Z wszytskich porównywanych modeli predykcyjnych, najlepsze wyniki okazały się należeć do modelu regresji liniowej, zbudowanego w artykule *Ensemble Stock Market Prediction using SVM,LSTM, and Linear Regression*. Nie dośc że model osiągnął 100% wytłumaczalnośc zmienności danych, to do tego ma najniższy błąd $RSME$, co bezsprzecznie stawia go na pierwszym miejsyu wśród omawianych technik. Do tego zdecydowanie najgorszy jest model SVR. 
+
+Zbydowany przez nas model LSTM, nie wypada najgorzej, jednak widać możliwości na poprawę jego wyników. 
+
+
+***
 
 # Bibliografia 
 
@@ -751,6 +937,8 @@ Mimo różnicy w liczbie rozważanych danych czasowych wartość $\small R^2$ dl
 4. Wall, K. (2022). *Negative R2: Where did you go wrong*. Towards Data Science, https://towardsdatascience.com/negative-r2-where-did-you-go-wrong-9d4f2aa84cfb
 
 5. Indika, A., Warusamana, N., Welikala, E., & Deegalla, S. (2021). *Ensemble Stock Market Prediction using SVM,LSTM, and Linear Regression*, https://doi.org/10.36227/techrxiv.16626019.v1
+
+6. Chang, V., Xu, Q. A., Chidozie, A., Wang, H., & Marino, S. (2024). *Predicting Economic Trends and Stock Market Prices with Deep Learning and Advanced Machine Learning Techniques.* Electronics, 13(17), 3396.
 
 
 
