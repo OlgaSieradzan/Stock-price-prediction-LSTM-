@@ -282,6 +282,16 @@ knitr::include_graphics("activation_tanh_rep_4.png")
 <div style='text-align: justify'>
 Błędy zostały policzone jako średnia dla wszystkich 5 prób
 </div>
+<<<<<<< HEAD
+
+```{r, echo=FALSE}
+minimalne_rmse <- activation %>%
+  group_by(Value) %>%
+  filter(RMSE == min(RMSE)) %>%
+  ungroup()
+
+minimalne_rmse
+=======
 ```{r, echo=FALSE}
 act <- activation %>%
   group_by(Value) %>%
@@ -294,6 +304,7 @@ act <- activation %>%
 colnames(act) <- c("f.aktywacyjna", "RMSE", "R2")
 
 act
+>>>>>>> 062d7b98ab5d15fdacb76be06d0050ec6af30d9b
 ```
 
 
@@ -362,6 +373,14 @@ knitr::include_graphics("batch_size_128_rep_1.png")
 ```
 
 ```{r, echo=FALSE}
+<<<<<<< HEAD
+minimalne_rmse <- batch_size %>%
+  group_by(Value) %>%
+  filter(RMSE == min(RMSE)) %>%
+  ungroup()
+
+minimalne_rmse
+=======
 ba <- batch_size %>%
   group_by(Value) %>%
   summarise(
@@ -371,6 +390,7 @@ ba <- batch_size %>%
   as.data.frame() 
 colnames(ba) <- c("Rozmiar partii", "RMSE", "R2")
 ba
+>>>>>>> 062d7b98ab5d15fdacb76be06d0050ec6af30d9b
 ```
 
 <div style='text-align: justify'>
@@ -435,7 +455,16 @@ knitr::include_graphics("layers_4_rep_2.png")
 knitr::include_graphics("layers_5_rep_1.png")
 ```
 
+
 ```{r, echo=FALSE}
+<<<<<<< HEAD
+minimalne_rmse <- layers %>%
+  group_by(value) %>%
+  filter(rmse == min(rmse)) %>%
+  ungroup()
+
+minimalne_rmse
+=======
 lay <- layers %>%
   group_by(value) %>%
   summarise(
@@ -446,6 +475,7 @@ lay <- layers %>%
 
 colnames(lay) <- c("Liczba warstw", "RMSE", "R2")
 lay
+>>>>>>> 062d7b98ab5d15fdacb76be06d0050ec6af30d9b
 ```
 
 <div style='text-align: justify'>
@@ -512,6 +542,14 @@ knitr::include_graphics("neurons_200_rep_3.png")
 ```
 
 ```{r, echo=FALSE}
+<<<<<<< HEAD
+minimalne_rmse4 <- neurons %>%
+  group_by(Value) %>%
+  filter(RMSE == min(RMSE)) %>%
+  ungroup()
+
+minimalne_rmse4
+=======
 ne <- neurons %>%
   group_by(Value) %>%
   summarise(
@@ -522,6 +560,7 @@ ne <- neurons %>%
 
 colnames(ne) <- c("Liczba neuronów", "RMSE", "R2")
 ne
+>>>>>>> 062d7b98ab5d15fdacb76be06d0050ec6af30d9b
 ```
 
 <div style='text-align: justify'>
@@ -621,6 +660,15 @@ knitr::include_graphics("optimizer_SGD_rep_1.png")
 <div style='text-align: justify'>
 Dla optymalizatora SGD ponownie jest sytuacja taka, jak dla opt. Adagrad. Wartości błędu na przestrzeni epok są bardzo wysokie. Maleje zdecydowanie wolniej niż w innych przypadkach. Wypada on tutaj najgorzej. Możemy to też zobaczyć po prognozie cen, że uzyskane wyniki znacząco się różnią od rzeczywistych. 
 </div>
+<<<<<<< HEAD
+```{r, echo=FALSE}
+minimalne_rmse5 <- optimizer %>%
+  group_by(Value) %>%
+  filter(RMSE == min(RMSE)) %>%
+  ungroup()
+
+minimalne_rmse5
+=======
 
 ```{r, echo=FALSE}
 op <- optimizer %>%
@@ -633,6 +681,7 @@ op <- optimizer %>%
 colnames(op) <- c("Optymalizator", "RMSE", "R2")
 
 op
+>>>>>>> 062d7b98ab5d15fdacb76be06d0050ec6af30d9b
 ```
 
 <div style='text-align: justify'>
